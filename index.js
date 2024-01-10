@@ -12,12 +12,12 @@ function SleepTime() {
 function Busy() {
     const currentTime = new Date()
     const currentHour = currentTime.getHours()
-    return currentHour >= 6 && currentHour < 15
+    return currentHour >= 6 && currentHour < 18
 }
 function Night(){
     const currentTime = new Date()
     const currentHour = currentTime.getHours()
-    return currentHour >= 15 && currentHour < 23
+    return currentHour >= 18 && currentHour < 23
 }
 
 client.on('qr', qr => {
@@ -33,9 +33,10 @@ client.on('message',async (msg) =>{
     const chat = await msg.getChat()
     const contact = await msg.getContact()
 
-    if(text === "-help"){
-        let text = ""
-        const media = MessageMedia.fromFilePath('./img/smile.png')
+    if(text === "-info"){
+        console.log("using -info")
+        let text = "Hi, ini adalah balasan otomatis\nAutomatic response ini masih dalam tahap pengembangan dan project ini menggunakan library npm bernama WhatsappWebJS\nhttps://wwebjs.dev/ \n\nGitHub saya: \nhttps://github.com/voidkle"
+        const media = MessageMedia.fromFilePath('./img/wifestelle.jpg')
         chat.sendMessage(media, {caption: text})
     }
 
@@ -81,9 +82,13 @@ client.on('message',async (msg) =>{
 })
 client.on('message', async (msg) => {
     const mentions = await msg.getMentions()
-    for(let contact of mentions) {
-        console.log(`${contact.pushname} was mentioned`)
-        client.sendMessage(msg.from, "Hai, ini adalah pesan otomatis, jika anda sedang mencoba tag Hayqal, Beliau saat ini sedang tidak Dalam Jangkauan")
+    const isMentioned = mentions.some(contact => contact.isMe)
+    if(isMentioned){
+        console.log("you get mentioned")
+        client.sendMessage(msg.from, "Hai, ini adalah pesan otomatis, jika anda sedang mencoba menghubunginya, saat ini ia sedang diluar jangkauan")
+    }
+    else if(mentions){
+        console.log("someone get mentioned")
     }
 });
 client.initialize();
