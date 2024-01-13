@@ -1,9 +1,22 @@
 const qrcode = require('qrcode-terminal')
-const { MessageMedia } = require('whatsapp-web.js')
-const { Client } = require('whatsapp-web.js')
-const client = new Client()
+const { MessageMedia, Client, LocalAuth, ClientInfo } = require('whatsapp-web.js')
 const axios = require('axios')
+const client = new Client({
+    authStrategy: new LocalAuth({dataPath: "./auth/"}),
+})
 
+//this is the first login function
+client.on('qr', qr => {
+    qrcode.generate(qr, {small: true})
+})
+
+client.on('ready', () => {
+    console.log('Client is ready!')
+})
+
+//this is the function depends on what the times on
+//ex: its 23.00 - 06.00, when someone is sending message to you
+//it will reply "Sorry, the person that you're contacting is still asleep"
 function SleepTime() {
     const currentTime = new Date()
     const currentHour = currentTime.getHours()
@@ -20,19 +33,25 @@ function Night(){
     return currentHour >= 18 && currentHour < 23
 }
 
-client.on('qr', qr => {
-    qrcode.generate(qr, {small: true})
+//this is the messaging function with some conditional message
+client.on('change_state', async (info) =>{
+    console.log(info)
 })
-
-client.on('ready', () => {
-    console.log('Client is ready!')
-})
-
 client.on('message',async (msg) =>{
     const text = msg.body.toLowerCase() || ''
     const chat = await msg.getChat()
     const contact = await msg.getContact()
+    const mentions = await msg.getMentions()
+    const isMentioned = mentions.some(contact => contact.isMe)
 
+    if(isMentioned){
+        console.log("you get mentioned")
+        client.sendMessage(msg.from, "Hai, ini adalah pesan otomatis, jika anda sedang mencoba menghubunginya, saat ini ia sedang diluar jangkauan")
+    }
+    else if(mentions){
+        console.log("someone get mentioned")
+    }
+    
     if(text === "-info"){
         console.log("using -info")
         let text = "Hi, ini adalah balasan otomatis\nAutomatic response ini masih dalam tahap pengembangan dan project ini menggunakan library npm bernama WhatsappWebJS\nhttps://wwebjs.dev/ \n\nGitHub saya: \nhttps://github.com/voidkle"
@@ -80,16 +99,6 @@ client.on('message',async (msg) =>{
         }
     }
 })
-client.on('message', async (msg) => {
-    const mentions = await msg.getMentions()
-    const isMentioned = mentions.some(contact => contact.isMe)
-    if(isMentioned){
-        console.log("you get mentioned")
-        client.sendMessage(msg.from, "Hai, ini adalah pesan otomatis, jika anda sedang mencoba menghubunginya, saat ini ia sedang diluar jangkauan")
-    }
-    else if(mentions){
-        console.log("someone get mentioned")
-    }
-});
+
 client.initialize();
  
