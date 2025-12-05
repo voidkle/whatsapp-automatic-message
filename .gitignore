@@ -1,3 +1,4 @@
 .wwebjs_cache
+.wwebjs_auth
 auth
 node_modules

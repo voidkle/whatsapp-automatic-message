@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  whatsapp-n8n-herta:
+    build: .
+    container_name: whatsapp-n8n-herta
+    restart: unless-stopped
+    volumes:
+      - ./session:/app/.wwebjs_auth
+      - ./session:/app/.wwebjs_cache
+    ports:
+      - "3113:3113"
