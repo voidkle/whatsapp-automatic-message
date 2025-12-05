@@ -1,25 +1,25 @@
-// index.js
+// src/index.js - Versi Perbaikan
 
 const express = require("express");
 const getReplyMessage = require("./replyMessages");
-const initWhatsapp = require("./waClient");
-const isUserRecentlyActive = require("./waClient")
+const { initWhatsapp, isUserRecentlyActive, markUserActivity } = require("./waClient");
 
 const app = express();
 app.use(express.json());
 
-let isUserActive = false; // TRUE = kamu aktif, bot jangan auto-reply
+// Hapus 'let isUserActive = false;'
 
-// Status handler
+// Status handler (hanya untuk logging)
 function statusHandler(state) {
     console.log("[WA STATE]", state);
-    isUserActive = isUserRecentlyActive();
+    // Hapus pemanggilan isUserRecentlyActive() di sini
 }
 
 // Message handler
 function messageHandler(msg) {
-    if (isUserActive) {
-        console.log("User aktif, bot tidak membalas.");
+    // Panggil fungsi pengecekan aktivitas secara LANGSUNG pada setiap pesan
+    if (isUserRecentlyActive()) {
+        console.log("User aktif (dalam 2 menit terakhir), bot tidak membalas.");
         return;
     }
 
@@ -31,9 +31,11 @@ function messageHandler(msg) {
 
 initWhatsapp(statusHandler, messageHandler);
 
-// simple health check
+// Perbarui health check agar menampilkan status real-time
 app.get("/", (req, res) => {
-    res.json({ status: "running", userActive: isUserActive });
+    const userActiveStatus = isUserRecentlyActive(); 
+    const timeOut = markUserActivity();
+    res.json({ status: "running", userActive: userActiveStatus, interval:  timeOut});
 });
 
 app.listen(3113, () => {

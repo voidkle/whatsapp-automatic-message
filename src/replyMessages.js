@@ -1,7 +1,7 @@
 // replyMessages.js
 
 module.exports = function getReplyMessage() {
-    const hour = new Date(Date.now() + 7 * 3600000).getHours(); // UTC+7
+    const hour = new Date().getHours();
 
     if (hour >= 21 || hour < 5) {
         return "[Automatic reply] Kemungkinan Saya sedang tidur, will contact you soon!";

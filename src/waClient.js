@@ -5,11 +5,11 @@ const qrcode = require("qrcode-terminal");
 let lastActivity = 0;
 
 function markUserActivity() {
-    lastActivity = Date.now();
+  lastActivity = Date.now();
 }
 
 function isUserRecentlyActive() {
-    return Date.now() - lastActivity < 50; // 5 menit
+  return Date.now() - lastActivity < 2 * 60 * 1000; // 2 menit
 }
 
 function initWhatsapp(statusCallback, messageHandler) {
@@ -30,9 +30,15 @@ function initWhatsapp(statusCallback, messageHandler) {
     statusCallback("DISCONNECTED:" + reason)
   );
   client.on("message_create", (msg) => {
-    if (msg.fromMe) markUserActivity();
+    if (msg.fromMe) {
+        if (!msg.body.startsWith("[Automatic reply]")) { 
+            markUserActivity();
+            console.log("[WA CLIENT] Aktivitas owner dicatat.");
+        } else {
+            console.log("[WA CLIENT] Balasan otomatis bot diabaikan dari reset aktivitas.");
+        }
+    }
   });
-
   client.on("message", (msg) => {
     if (!msg.from.endsWith("@c.us")) return; // only direct chats
     messageHandler(msg);
@@ -42,4 +48,4 @@ function initWhatsapp(statusCallback, messageHandler) {
   return client;
 }
 
-module.exports = initWhatsapp, isUserRecentlyActive;
+module.exports = { initWhatsapp, isUserRecentlyActive, markUserActivity };
