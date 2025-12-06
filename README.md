@@ -1,8 +1,10 @@
 # LAZY AH PROJECT - WhatsApp Auto-Reply Bot
 
-**WhatsApp Auto-Reply Bot** adalah sebuah proyek sederhana yang berfungsi sebagai bot pembalas pesan otomatis. Bot ini dirancang untuk beroperasi tanpa membalas pesan jika pengguna (pemilik akun) sedang aktif (mengirim pesan) dalam periode waktu tertentu. Fitur *idle countdown* juga ditambahkan untuk memudahkan monitoring status bot.
+**WhatsApp Auto-Reply Bot** adalah sebuah proyek sederhana yang berfungsi sebagai bot pembalas pesan otomatis. Bot ini dirancang untuk beroperasi tanpa membalas pesan jika pengguna (pemilik akun) sedang aktif (mengirim pesan) dalam periode waktu tertentu.
+Fitur *idle countdown* akan ditambahkan untuk memudahkan monitoring status bot.
 
 Proyek ini dibangun menggunakan Node.js dan library `whatsapp-web.js` dengan Puppeteer.
+terserah lu mo pake docker apa kagak
 
 ## Fitur Utama
 
@@ -25,7 +27,16 @@ Proyek ini dibangun menggunakan Node.js dan library `whatsapp-web.js` dengan Pup
 ### 1. Kloning Repositori & Instalasi Dependensi
 
 ```bash
-# Ganti dengan nama folder proyek Anda
-git clone <URL_REPO_ANDA> whatsapp-automatic-message
+git clone https://github.com/voidkle/whatsapp-automatic-message.git
 cd whatsapp-automatic-message
 npm install
+npm start
+```
+### 2. Kalo pake Docker
+```bash
+git clone https://github.com/voidkle/whatsapp-automatic-message.git
+cd whatsapp-automatic-message
+docker compose up -d
+```
+terus cek di log docker buat scan qr untuk lojin
+npm start
